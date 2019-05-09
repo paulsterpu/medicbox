@@ -51,11 +51,11 @@ export default function Menu({ onItemSelected }) {
                 About
             </Text>
 
-            <Text
+{/*            <Text
                 style={styles.item}
             >
                 Contacts
-            </Text>
+            </Text>*/}
         </ScrollView>
     );
 }

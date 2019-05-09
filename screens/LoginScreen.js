@@ -3,7 +3,7 @@ import {
     View,
     Text,
     StyleSheet,
-    Button, TextInput, TouchableOpacity
+    Button, TextInput, TouchableOpacity, Keyboard, Image
 } from "react-native";
 
 import axios from 'axios';
@@ -21,7 +21,8 @@ class LoginScreen extends Component {
         super(props);
         this.state = {
             cnp: '',
-            password: ''
+            password: '',
+            isKeyboardUp: false
         };
     }
 
@@ -36,8 +37,19 @@ class LoginScreen extends Component {
                 // error reading value
             }
         };
-        getData();
+        //getData();
+
+        this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
+        this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
     }
+
+    _keyboardDidShow = () => {
+        this.setState({isKeyboardUp: true})
+    };
+
+    _keyboardDidHide = () => {
+        this.setState({isKeyboardUp: false})
+    };
 
     login = () => {
 
@@ -78,32 +90,55 @@ class LoginScreen extends Component {
         })
     };
 
+    register = () => {
+        this.props.navigation.navigate('Register');
+    };
+
     render() {
 
         return (
             <View style={styles.container}>
-                {
-                    this.state.invalidCredentials &&
-                        <Text>
-                            Invalid Credentials
-                        </Text>
-                }
-                <TextInput
-                    style={styles.loginField}
-                    onChangeText={(cnp) => this.setState({cnp})}
-                    placeholder={'CNP'}
-                    value={this.state.text}
-                />
-                <TextInput
-                    style={styles.loginField}
-                    onChangeText={(password) => this.setState({password})}
-                    placeholder={'Password'}
-                    secureTextEntry={true}
-                    value={this.state.text}
-                />
-                <TouchableOpacity
-                        style={styles.loginButton}
-                        onPress={this.login}><Text style={styles.loginButtonText}>Sign In</Text></TouchableOpacity>
+
+                <View style={styles.imageContainer}>
+                    <Image
+                        style={{width: 200, height: 200}}
+                        source={{uri: 'https://i.imgur.com/IPhCeyo.jpg'}}
+                    />
+                </View>
+
+                <View style={styles.formContainer}>
+                    {
+                        this.state.invalidCredentials &&
+                            <Text>
+                                Invalid Credentials
+                            </Text>
+                    }
+                    <TextInput
+                        style={styles.loginField}
+                        onChangeText={(cnp) => this.setState({cnp})}
+                        placeholder={'CNP'}
+                        value={this.state.text}
+                        onSubmitEditing={Keyboard.dismiss}
+                    />
+                    <TextInput
+                        style={styles.loginField}
+                        onChangeText={(password) => this.setState({password})}
+                        placeholder={'Password'}
+                        secureTextEntry={true}
+                        value={this.state.text}
+                        onSubmitEditing={Keyboard.dismiss}
+                    />
+                    <TouchableOpacity
+                            style={styles.loginButton}
+                            onPress={this.login}><Text style={styles.loginButtonText}>Sign In</Text></TouchableOpacity>
+                </View>
+
+                <View style={styles.signupButtonContainer}>
+                    <TouchableOpacity
+                        style={this.state.isKeyboardUp ? {display: 'none'} : styles.registerButton}
+                        onPress={this.register}><Text style={styles.registerButtonText}>Don't have an account? Sign up</Text></TouchableOpacity>
+                </View>
+
             </View>
         );
     }
@@ -113,23 +148,50 @@ export default LoginScreen;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
         justifyContent: 'center'
     },
     loginField: {
         height: 40,
         borderColor: 'gray',
         borderBottomWidth: 1,
-        width: '80%'
+        width: '100%'
     },
     loginButton: {
-        top: 80,
-        width: '80%',
+        top: 20,
+        width: '100%',
         borderWidth: 1,
         height: 40,
         justifyContent: 'center',
         alignItems: 'center'
     },
     loginButtonText: {
+    },
+    formContainer: {
+        flex: 0.4,
+        alignSelf: 'center',
+        width: '80%'
+    },
+    imageContainer: {
+        flex: 0.5,
+        alignSelf: 'center',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    signupButtonContainer: {
+        flex: 0.1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '80%',
+        alignSelf: 'center'
+    },
+    registerButton: {
+      borderWidth: 0,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        borderTopWidth: 2
+    },
+    registerButtonText: {
+
     }
 });
