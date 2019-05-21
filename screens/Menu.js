@@ -6,7 +6,10 @@ import {
     View,
     Image,
     Text,
+    TouchableOpacity
 } from 'react-native';
+
+import AsyncStorage from '@react-native-community/async-storage';
 
 const window = Dimensions.get('window');
 const uri = 'https://pickaface.net/gallery/avatar/Opi51c74d0125fd4.png';
@@ -16,7 +19,7 @@ const styles = StyleSheet.create({
         flex: 1,
         width: window.width,
         height: window.height,
-        backgroundColor: 'gray',
+        backgroundColor: '#DCDCDC',
         padding: 20
     },
     avatarContainer: {
@@ -41,15 +44,47 @@ const styles = StyleSheet.create({
     },
 });
 
-export default function Menu({ onItemSelected }) {
-    return (
-        <ScrollView scrollsToTop={false} style={this.props ?  this.props.menuStyle : {}}>
+function logout(navigation) {
 
-            <Text
-                style={this.props && this.props.show ? styles.item : {display: 'none'}}
-            >
-                About
+    let userId = null, token, userName;
+
+    let getData = async () => {
+        try {
+            userId = await AsyncStorage.getItem('user_id');
+            token = await AsyncStorage.getItem('token');
+            userName = await AsyncStorage.getItem('user_id');   //REPLACE USER_ID WITH USERNAME
+
+            await AsyncStorage.setItem('user_id', '');
+            await AsyncStorage.setItem('token', '');
+            await AsyncStorage.setItem('username', '');
+
+            navigation.navigate('Login');
+
+        } catch(e) {
+            // error reading value
+        }
+    };
+
+    getData();
+}
+
+export default function Menu({ username, navigation }) {
+
+    return (
+        <ScrollView scrollsToTop={false} style={styles.menu}>
+
+            <Text>
+                Logged in as:
             </Text>
+
+            <Text>
+                {username}
+            </Text>
+
+            <TouchableOpacity onPress={() => {logout(navigation)}}>
+                <Text style={styles.buttonText}>Logout</Text>
+            </TouchableOpacity>
+
 
 {/*            <Text
                 style={styles.item}

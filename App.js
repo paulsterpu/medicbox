@@ -12,6 +12,8 @@ import {createStackNavigator, createAppContainer} from 'react-navigation';
 import LoginScreen from './screens/LoginScreen';
 import PatientsList from './screens/PatientsList';
 import RegisterScreen from './screens/RegisterScreen';
+import SuccessfulRegisterScreen from './screens/SuccessfulRegisterScreen';
+import PatientDetailsScreen from './screens/PatientDetailsScreen';
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -43,7 +45,9 @@ class Home extends Component<Props> {
 const AppStackNavigator = createStackNavigator({
     Login: LoginScreen,
     PatientsList: PatientsList,
-    Register: RegisterScreen
+    Register: RegisterScreen,
+    SuccessfulRegister: SuccessfulRegisterScreen,
+    PatientDetails: PatientDetailsScreen
 });
 
 const AppContainer = createAppContainer(AppStackNavigator);

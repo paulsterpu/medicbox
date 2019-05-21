@@ -53,7 +53,7 @@ class RegisterScreen extends Component {
                 password: this.state.password,
                 hospital: this.state.hospital,
                 speciality: this.state.speciality,
-                code: this.state.code,
+                unique_code: this.state.code,
                 email: this.state.email,
                 name: this.state.name
             }
@@ -62,49 +62,12 @@ class RegisterScreen extends Component {
                 console.log('response');
                 console.log(response);
 
-                axios({
-                    method: 'post',
-                    url: api + '/auth-token/',
-                    data: {
-                        username: this.state.cnp,
-                        password: this.state.password,
-                    }
-                })
-                    .then(response => {
-                        console.log('response');
-                        console.log(response);
-                        if (response.status === 200) {
-
-                            storeData = async () => {
-                                try {
-                                    await AsyncStorage.setItem('token', response.data.token);
-                                    await AsyncStorage.setItem('user_id', response.data.uuid);
-                                } catch (e) {
-                                    // saving error
-                                }
-                            };
-
-                            storeData();
-
-                            this.props.navigation.navigate('PatientsList');
-                        }
-                    })
-                    .catch(error => {
-                        console.log('error');
-                        console.log(error);
-                        this.setState({
-                            invalidCredentials: true
-                        })
-
-                    })
+                this.props.navigation.navigate('SuccessfulRegister');
 
             })
             .catch(error => {
                 console.log('error');
-                console.log(error);
-                this.setState({
-                    invalidCredentials: true
-                })
+                console.log(error.response.data);
 
             })
     };

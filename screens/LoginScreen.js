@@ -30,14 +30,17 @@ class LoginScreen extends Component {
         let getData = async () => {
             try {
                 const value = await AsyncStorage.getItem('token');
-                if(value !== null) {
+                
+                console.log('token in login: ', value);
+                
+                if(value !== null && value !== '') {
                     this.props.navigation.navigate('PatientsList');
                 }
             } catch(e) {
                 // error reading value
             }
         };
-        //getData();
+        getData();
 
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
@@ -70,6 +73,7 @@ class LoginScreen extends Component {
                     try {
                         await AsyncStorage.setItem('token', response.data.token);
                         await AsyncStorage.setItem('user_id', response.data.uuid);
+                        await AsyncStorage.setItem('username', response.data.username);     //ADD FROM BACKEND
                     } catch (e) {
                         // saving error
                     }
@@ -82,12 +86,37 @@ class LoginScreen extends Component {
         })
         .catch(error => {
             console.log('error');
-            console.log(error)
+            console.log(error.response.data);
             this.setState({
                 invalidCredentials: true
             })
 
         })
+    };
+
+    fakeLogin = () => {
+
+        if (this.state.cnp === 'cnp10' && this.state.password === '123123') {
+
+            let storeData = async () => {
+                try {
+                    await AsyncStorage.setItem('token', 'token123');
+                    await AsyncStorage.setItem('user_id', 'uuid123');
+                    await AsyncStorage.setItem('username', 'cnp10');     //ADD FROM BACKEND
+                } catch (e) {
+                    // saving error
+                }
+            };
+
+            storeData();
+
+            this.props.navigation.navigate('PatientsList');
+
+        } else {
+            this.setState({
+                invalidCredentials: true
+            })
+        }
     };
 
     register = () => {
@@ -130,7 +159,7 @@ class LoginScreen extends Component {
                     />
                     <TouchableOpacity
                             style={styles.loginButton}
-                            onPress={this.login}><Text style={styles.loginButtonText}>Sign In</Text></TouchableOpacity>
+                            onPress={this.fakeLogin}><Text style={styles.loginButtonText}>Sign In</Text></TouchableOpacity>
                 </View>
 
                 <View style={styles.signupButtonContainer}>
